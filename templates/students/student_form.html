@@ -1,0 +1,27 @@
+{% extends "students/base.html" %}
+{% block title %}{{ title }} | Student Manager{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <p class="eyebrow">STUDENT RECORD</p>
+    <h1>{{ title }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="error">{{ field.errors|striptags }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <a class="secondary-btn" href="{% url 'student_list' %}">Cancel</a>
+            <button class="primary-btn" type="submit">{{ button }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

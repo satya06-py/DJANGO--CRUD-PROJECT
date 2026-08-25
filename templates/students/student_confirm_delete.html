@@ -1,0 +1,17 @@
+{% extends "students/base.html" %}
+{% block title %}Delete Student | Student Manager{% endblock %}
+
+{% block content %}
+<div class="form-card confirm">
+    <div class="empty-icon">⚠️</div>
+    <h1>Delete Student?</h1>
+    <p>Are you sure you want to delete <strong>{{ student.name }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <a class="secondary-btn" href="{% url 'student_list' %}">Cancel</a>
+            <button class="danger-btn" type="submit">Yes, Delete</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
