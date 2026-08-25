@@ -1,8 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import StudentForm
 from .models import Student
-
+@login_required
 def student_list(request):
     query = request.GET.get("q", "").strip()
     students = Student.objects.all()
@@ -16,7 +17,7 @@ def student_list(request):
         "students": students,
         "query": query,
     })
-
+@login_required
 def student_create(request):
     if request.method == "POST":
         form = StudentForm(request.POST)
@@ -32,7 +33,7 @@ def student_create(request):
         "title": "Add Student",
         "button": "Add Student",
     })
-
+@login_required
 def student_update(request, pk):
     student = get_object_or_404(Student, pk=pk)
 
@@ -50,7 +51,7 @@ def student_update(request, pk):
         "title": "Edit Student",
         "button": "Update Student",
     })
-
+@login_required
 def student_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)
 
