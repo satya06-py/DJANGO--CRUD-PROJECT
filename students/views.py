@@ -2,9 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from .forms import StudentForm
-from .models import Student
+from .models import Student, Attendance
 
 
 @login_required
@@ -107,5 +108,53 @@ def student_delete(request, pk):
         "students/student_confirm_delete.html",
         {
             "student": student,
+        },
+    )
+
+
+# =========================
+# ATTENDANCE
+# =========================
+
+@login_required
+def attendance(request):
+    # Get all students
+    students = Student.objects.all().order_by("name")
+
+    # Save attendance
+    if request.method == "POST":
+
+        date = request.POST.get("date")
+
+        for student in students:
+
+            status = request.POST.get(
+                f"student_{student.id}"
+            )
+
+            Attendance.objects.update_or_create(
+                student=student,
+                date=date,
+                defaults={
+                    "present": status == "present"
+                },
+            )
+
+        messages.success(
+            request,
+            "Attendance saved successfully."
+        )
+
+        return redirect("attendance")
+
+    # Today's date
+    today = timezone.localdate()
+
+    return render(
+        request,
+        "students/attendance.html",
+        {
+            "students": students,
+            "today": today,
         },
     )

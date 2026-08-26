@@ -13,3 +13,16 @@ class Student(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Attendance(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    date = models.DateField()
+    present = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('student', 'date')
+
+    def __str__(self):
+        status = "Present" if self.present else "Absent"
+        return f"{self.student.name} - {self.date} - {status}"
