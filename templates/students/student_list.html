@@ -32,10 +32,17 @@
                     <td>{{ student.phone }}</td>
                     <td>{{ student.course }}</td>
                     <td>{{ student.semester }}</td>
-                    <td class="actions">
-                        <a class="edit" href="{% url 'student_update' student.id %}">Edit</a>
-                        <a class="delete" href="{% url 'student_delete' student.id %}">Delete</a>
-                    </td>
+                  <td class="actions">
+    <!-- Pencil Edit Button -->
+    <a class="edit" href="{% url 'student_update' student.id %}" title="Edit">
+        ✏️
+    </a>
+
+    <!-- Delete Button -->
+    <a class="delete" href="{% url 'student_delete' student.id %}" title="Delete">
+        Delete
+    </a>
+</td>
                 </tr>
             {% endfor %}
             </tbody>
