@@ -1,3 +1,17 @@
+<style>
+    input:required:invalid,
+    select:required:invalid,
+    textarea:required:invalid {
+        border: 2px solid red;
+    }
+
+    input:required:valid,
+    select:required:valid,
+    textarea:required:valid {
+        border: 2px solid #28a745;
+    }
+</style>
+
 {% extends "students/base.html" %}
 {% block title %}{{ title }} | Student Manager{% endblock %}
 
