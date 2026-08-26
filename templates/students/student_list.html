@@ -1,60 +1,278 @@
+```html
 {% extends "students/base.html" %}
 {% block title %}Students | Student Manager{% endblock %}
 
 {% block content %}
+
 <section class="hero">
     <div>
         <h1>Student Management</h1>
     </div>
-    <a class="primary-btn" href="{% url 'student_create' %}">+ Add Student</a>
+
+    <a class="primary-btn" href="{% url 'student_create' %}">
+        + Add Student
+    </a>
 </section>
+
+
+<!-- Search -->
 <form class="search" method="get">
-    <input type="text" name="q" value="{{ query }}" placeholder="Search by name, email or course...">
+    <input
+        type="text"
+        name="q"
+        value="{{ query }}"
+        placeholder="Search by name, email or course..."
+    >
+
     <button type="submit">Search</button>
-    {% if query %}<a href="{% url 'student_list' %}">Clear</a>{% endif %}
+
+    {% if query %}
+        <a href="{% url 'student_list' %}">Clear</a>
+    {% endif %}
 </form>
+
+
 <div class="card">
+
     {% if students %}
+
     <div class="table-wrap">
+
         <table>
+
             <thead>
                 <tr>
-                    <th>ID</th><th>Name</th><th>Email</th><th>Phone</th>
-                    <th>Course</th><th>Semester</th><th>Actions</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Course</th>
+                    <th>Semester</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-            {% for student in students %}
-                <tr>
-                    <td>{{ student.id }}</td>
-                    <td><strong>{{ student.name }}</strong></td>
-                    <td>{{ student.email }}</td>
-                    <td>{{ student.phone }}</td>
-                    <td>{{ student.course }}</td>
-                    <td>{{ student.semester }}</td>
-                  <td class="actions">
-    <!-- Pencil Edit Button -->
-    <a class="edit" href="{% url 'student_update' student.id %}" title="Edit">
-        ✏️
-    </a>
 
-    <!-- Delete Button -->
-    <a class="delete" href="{% url 'student_delete' student.id %}" title="Delete">
-        Delete
-    </a>
-</td>
+
+            <tbody>
+
+            {% for student in students %}
+
+                <tr>
+
+                    <td>{{ student.id }}</td>
+
+                    <td>
+                        <strong>{{ student.name }}</strong>
+                    </td>
+
+                    <td>{{ student.email }}</td>
+
+                    <td>{{ student.phone }}</td>
+
+                    <td>{{ student.course }}</td>
+
+                    <td>{{ student.semester }}</td>
+
+
+                    <!-- Actions -->
+                    <td class="actions">
+
+                        <!-- Edit -->
+                        <a
+                            class="edit"
+                            href="{% url 'student_update' student.id %}"
+                            title="Edit Student"
+                        >
+                            ✏️
+                        </a>
+
+
+                        <!-- Delete -->
+                        <a
+                            class="delete"
+                            href="{% url 'student_delete' student.id %}"
+                            title="Delete Student"
+                        >
+                            Delete
+                        </a>
+
+                    </td>
+
                 </tr>
+
             {% endfor %}
+
             </tbody>
+
         </table>
+
     </div>
+
+
+    <!-- Pagination -->
+    <div class="pagination">
+
+        {% if page_obj.has_previous %}
+
+            <a
+                href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}"
+                class="page-btn"
+            >
+                ← Previous
+            </a>
+
+        {% endif %}
+
+
+        {% for num in page_obj.paginator.page_range %}
+
+            {% if page_obj.number == num %}
+
+                <span class="page-btn active">
+                    {{ num }}
+                </span>
+
+            {% else %}
+
+                <a
+                    href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}"
+                    class="page-btn"
+                >
+                    {{ num }}
+                </a>
+
+            {% endif %}
+
+        {% endfor %}
+
+
+        {% if page_obj.has_next %}
+
+            <a
+                href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}"
+                class="page-btn"
+            >
+                Next →
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Page information -->
+    <div class="page-info">
+
+        Showing
+        <strong>{{ page_obj.start_index }}</strong>
+        –
+        <strong>{{ page_obj.end_index }}</strong>
+
+        of
+
+        <strong>{{ page_obj.paginator.count }}</strong>
+        students
+
+    </div>
+
+
     {% else %}
+
+        <!-- No students -->
         <div class="empty">
+
             <div class="empty-icon">📚</div>
+
             <h2>No students found</h2>
-            <p>Add your first student to get started.</p>
-            <a class="primary-btn" href="{% url 'student_create' %}">Add Student</a>
+
+            {% if query %}
+                <p>No students match your search.</p>
+            {% else %}
+                <p>Add your first student to get started.</p>
+            {% endif %}
+
+            <a
+                class="primary-btn"
+                href="{% url 'student_create' %}"
+            >
+                Add Student
+            </a>
+
         </div>
+
     {% endif %}
+
 </div>
+
+
+<!-- Pagination CSS -->
+<style>
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+    background: #fff;
+    font-size: 14px;
+}
+
+.page-btn:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.page-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+.page-info {
+    text-align: center;
+    margin-top: 12px;
+    color: #666;
+    font-size: 14px;
+}
+
+.actions {
+    white-space: nowrap;
+}
+
+.actions .edit {
+    text-decoration: none;
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+.actions .delete {
+    display: inline-block;
+    padding: 6px 10px;
+    background: #dc3545;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.actions .delete:hover {
+    background: #b02a37;
+}
+
+</style>
+
 {% endblock %}
+```
